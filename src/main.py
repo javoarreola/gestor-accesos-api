@@ -21,8 +21,13 @@ def root():
 
 @app.get("/test-db")
 def test_db():
+
     with engine.connect() as connection:
-        result = connection.execute(text("SELECT DB_NAME()"))
+
+        result = connection.execute(
+            text("SELECT DB_NAME()")
+        )
+
         database_name = result.scalar()
 
     return {
