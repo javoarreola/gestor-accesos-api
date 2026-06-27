@@ -3,6 +3,7 @@ from sqlalchemy import text
 
 from src.config.database import engine
 from src.routers.empresa_router import router as empresa_router
+from src.routers.area_router import router as area_router
 
 app = FastAPI(
     title="Gestor de Accesos API",
@@ -10,6 +11,7 @@ app = FastAPI(
 )
 
 app.include_router(empresa_router)
+app.include_router(area_router)
 
 
 @app.get("/")
