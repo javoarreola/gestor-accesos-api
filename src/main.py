@@ -9,6 +9,7 @@ from src.routers.visitante_router import router as visitante_router
 from src.routers.registro_acceso_router import (
     router as registro_acceso_router
 )
+from src.routers.login_router import router as login_router
 
 
 app = FastAPI(
@@ -21,6 +22,7 @@ app.include_router(area_router)
 app.include_router(usuario_router)
 app.include_router(visitante_router)
 app.include_router(registro_acceso_router)
+app.include_router(login_router)
 
 
 @app.get("/")
