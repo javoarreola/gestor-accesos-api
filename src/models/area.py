@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, String
 from src.config.database import Base
 
 
+''' Modelo que registra las areas o departamentos que conforman la empresa '''
 class Area(Base):
     __tablename__ = "Areas"
 

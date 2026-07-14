@@ -10,6 +10,7 @@ from sqlalchemy.orm import relationship
 from src.config.database import Base
 
 
+'''  Modelo que registra las entradas y salidas de los visitantes '''
 class RegistroAcceso(Base):
     __tablename__ = "Registro_Accesos"
 

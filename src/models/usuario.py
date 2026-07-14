@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from src.config.database import Base
 
 
+''' Modelo que almacena la información de los usuarios del sistema '''
 class Usuario(Base):
     __tablename__ = "Usuarios"
 

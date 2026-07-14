@@ -12,11 +12,13 @@ from src.routers.registro_acceso_router import (
 from src.routers.login_router import router as login_router
 
 
+# Inicialización de la aplicación FastAPI.
 app = FastAPI(
     title="Gestor de Accesos API",
     version="1.0.0"
 )
 
+# Registro de los módulos principales de la API.
 app.include_router(empresa_router)
 app.include_router(area_router)
 app.include_router(usuario_router)
@@ -25,6 +27,7 @@ app.include_router(registro_acceso_router)
 app.include_router(login_router)
 
 
+# Endpoint principal de bienvenida.
 @app.get("/")
 def root():
     return {
@@ -32,6 +35,7 @@ def root():
     }
 
 
+# Endpoint para comprobar la conexión con la base de datos.
 @app.get("/test-db")
 def test_db():
 

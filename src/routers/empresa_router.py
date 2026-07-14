@@ -4,13 +4,21 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from src.config.database import get_db
-from src.schemas.empresa_schema import EmpresaCreate, EmpresaUpdate, EmpresaResponse
+from src.dependencies.auth_dependencies import obtener_usuario_actual
+from src.schemas.empresa_schema import (
+    EmpresaCreate, 
+    EmpresaUpdate, 
+    EmpresaResponse
+)
 from src.services import empresa_service
+
+
 
 
 router = APIRouter(
     prefix="/empresas",
-    tags=["Empresas"]
+    tags=["Empresas"],
+    dependencies=[Depends(obtener_usuario_actual)]
 )
 
 
@@ -19,7 +27,7 @@ router = APIRouter(
     response_model=List[EmpresaResponse]
 )
 def obtener_empresas(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     return empresa_service.obtener_empresas(db)
 

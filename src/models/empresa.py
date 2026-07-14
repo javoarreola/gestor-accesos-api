@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String
 from src.config.database import Base
 
 
+''' Modelo que representa la tabla Empresas de la base de datos '''
 class Empresa(Base):
     __tablename__ = "Empresas"
 
@@ -18,3 +19,4 @@ class Empresa(Base):
         nullable=False, 
         unique=True
         )
+    

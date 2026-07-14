@@ -3,6 +3,7 @@ from src.repositories import empresa_repository
 from src.schemas.empresa_schema import EmpresaCreate, EmpresaUpdate
 
 
+''' Solicita al repositorio el listado de empresas registradas '''
 def obtener_empresas(db: Session):
     return empresa_repository.get_all(db)
 
@@ -18,6 +19,7 @@ def obtener_empresa_por_id(
     )
 
 
+''' Coordina la creación de una nueva empresa '''
 def crear_empresa(
     db: Session, 
     empresa: EmpresaCreate
