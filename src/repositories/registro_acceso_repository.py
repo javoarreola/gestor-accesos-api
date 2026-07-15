@@ -8,7 +8,7 @@ from src.schemas.registro_acceso_schema import (
 
 
 def get_all(db: Session):
-    return db.query(RegistroAcceso).all()
+    return db.query(RegistroAcceso).all() #devuelve todos los registros
 
 
 def get_by_id(
@@ -20,7 +20,7 @@ def get_by_id(
         .filter(
             RegistroAcceso.id_registro == id_registro
         )
-        .first()
+        .first() #busca registros por medio de id
     )
 
 
@@ -41,7 +41,7 @@ def create(
     db.commit()
     db.refresh(nuevo_registro)
 
-    return nuevo_registro
+    return nuevo_registro #crea un nuevo registro en la base de datos
 
 
 def update(
@@ -70,8 +70,8 @@ def update(
     db.commit()
     db.refresh(registro_db)
 
-    return registro_db
-
+    return registro_db #actualiza un registro existente
+ 
 
 def delete(
     db: Session,
@@ -89,4 +89,4 @@ def delete(
     db.delete(registro_db)
     db.commit()
 
-    return registro_db
+    return registro_db #elimina un registro existente

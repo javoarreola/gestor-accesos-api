@@ -5,11 +5,11 @@ from src.schemas.area_schema import AreaCreate, AreaUpdate
 
 
 def get_all(db: Session):
-    return db.query(Area).all()
+    return db.query(Area).all() #devuelve todas las areas
 
 
 def get_by_id(db: Session, id_area: int):
-    return db.query(Area).filter(Area.id_area == id_area).first()
+    return db.query(Area).filter(Area.id_area == id_area).first() #funcion para buscar un area, se compara la id proporcionada con las disponibles en la base de datos y se devuelve lo que se haya encontrado
 
 
 def create(db: Session, area: AreaCreate):
@@ -21,7 +21,7 @@ def create(db: Session, area: AreaCreate):
     db.commit()
     db.refresh(nueva_area)
 
-    return nueva_area
+    return nueva_area #funcion para crear un area
 
 
 def update(db: Session, id_area: int, area: AreaUpdate):
@@ -35,7 +35,7 @@ def update(db: Session, id_area: int, area: AreaUpdate):
     db.commit()
     db.refresh(area_db)
 
-    return area_db
+    return area_db #funcion para actualizar un area
 
 
 def delete(db: Session, id_area: int):
@@ -47,4 +47,4 @@ def delete(db: Session, id_area: int):
     db.delete(area_db)
     db.commit()
 
-    return area_db
+    return area_db #funcion para eliminar un area

@@ -32,4 +32,4 @@ def iniciar_sesion(
             headers={"WWW-Authenticate": "Bearer"}
         )
 
-    return resultado
+    return resultado #aqui se hace el post dentro de swagger, donde se hara el login, dependiendo de los resultados se asignara el token o dara error

@@ -2,14 +2,14 @@ import os
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-import jwt
+import jwt #Libreria usada para generar tokens
 from dotenv import load_dotenv
 
 load_dotenv()
 
 SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES", "60"))
+ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256") 
+EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES", "60")) #aqui se carga el token y como se asignara al usarse, igualmente se establece un tiempo para que expire
 
 
 if not SECRET_KEY:
@@ -25,7 +25,7 @@ def crear_token_acceso(
 ) -> str:
     fecha_actual = datetime.now(timezone.utc)
     fecha_expiracion = fecha_actual + timedelta(
-        minutes=EXPIRE_MINUTES
+        minutes=EXPIRE_MINUTES #aqui se establece el tiempo en el que empezara a contar la validez del token
     )
 
     payload = {
@@ -33,7 +33,7 @@ def crear_token_acceso(
         "correo": correo,
         "rol": rol,
         "iat": fecha_actual,
-        "exp": fecha_expiracion
+        "exp": fecha_expiracion #los datos que almacenara el token
     }
 
     return jwt.encode(
@@ -55,4 +55,4 @@ def decodificar_token(token: str) -> dict[str, Any] | None:
         return None
 
     except jwt.InvalidTokenError:
-        return None
+        return None #aqui se crea una funcion para comprobar el token cada que se requiera

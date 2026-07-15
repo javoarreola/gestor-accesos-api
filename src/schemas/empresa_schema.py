@@ -9,7 +9,7 @@ class EmpresaCreate(EmpresaBase):
     pass
 
 
-class EmpresaUpdate(EmpresaBase):
+class EmpresaUpdate(EmpresaBase): #tanto update y create tienen un pass ya que estos espacios son rellenados por otras funciones, asi que solo se ocupa la estructura
     pass
 
 

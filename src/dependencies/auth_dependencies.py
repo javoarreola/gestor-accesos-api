@@ -7,30 +7,30 @@ from src.config.database import get_db
 from src.models.usuario import Usuario
 
 
-bearer_scheme = HTTPBearer()
+bearer_scheme = HTTPBearer() #formato en el que se recibira el token
 
 
 def obtener_usuario_actual(
-    credenciales: HTTPAuthorizationCredentials = Depends(bearer_scheme),
-    db: Session = Depends(get_db)
+    credenciales: HTTPAuthorizationCredentials = Depends(bearer_scheme), #aqui se obtienen las credenciales
+    db: Session = Depends(get_db) 
 ):
     token = credenciales.credentials
-    payload = decodificar_token(token)
+    payload = decodificar_token(token) #aqui se usa la funcion de decodificar para leer el token
 
     if payload is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token inválido o expirado",
-            headers={"WWW-Authenticate": "Bearer"}
+            headers={"WWW-Authenticate": "Bearer"} 
         )
 
-    id_usuario = payload.get("sub")
+    id_usuario = payload.get("sub") #si la validacion ocurre de manera exitosa se asigna este valor a la payload
 
     if id_usuario is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="El token no contiene un usuario válido",
-            headers={"WWW-Authenticate": "Bearer"}
+            headers={"WWW-Authenticate": "Bearer"} 
         )
 
     usuario = (
@@ -46,4 +46,4 @@ def obtener_usuario_actual(
             headers={"WWW-Authenticate": "Bearer"}
         )
 
-    return usuario
+    return usuario #para concluir se verifican los valores dentro de payload para saber si es un usuario valido

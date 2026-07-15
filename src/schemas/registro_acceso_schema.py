@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-
+#DTOs de registro
 class RegistroAccesoBase(BaseModel):
     id_visitante: int
     id_area: int

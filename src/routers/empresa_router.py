@@ -63,7 +63,7 @@ def crear_empresa(
     empresa: EmpresaCreate,
     db: Session = Depends(get_db)
 ):
-    return empresa_service.crear_empresa(
+    return empresa_service.crear_empresa( #se llaman las funciones para crear una empresa
         db,
         empresa
     )
@@ -93,7 +93,7 @@ def actualizar_empresa(
             detail="Empresa no encontrada"
         )
 
-    return empresa_actualizada
+    return empresa_actualizada #se busca la empresa por medio de id, empresa update devuelve la estructura, luego se usara la funcion de actualizar empresa para realizar cambios
 
 
 @router.delete("/{id_empresa}")

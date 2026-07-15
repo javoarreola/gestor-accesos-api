@@ -38,4 +38,4 @@ def autenticar_usuario(
         "nombre": usuario.nombre,
         "correo": usuario.correo,
         "rol": usuario.rol
-    }
+    } #dentro de esta funcion se buscar al usuario y se valida la contraseña, el token se devuelve si todo es correcto

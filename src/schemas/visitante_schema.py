@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-
+#dtos de visitantes
 class VisitanteBase(BaseModel):
     id_empresa: int
     nombre: str
