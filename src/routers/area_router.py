@@ -12,9 +12,12 @@ from src.schemas.area_schema import (
 )
 from src.services import area_service
 
+from src.dependencies.auth_dependencies import obtener_usuario_actual
+
 router = APIRouter(
     prefix="/areas",
-    tags=["Áreas"]
+    tags=["Áreas"],
+    dependencies=[Depends(obtener_usuario_actual)]
 )
 
 

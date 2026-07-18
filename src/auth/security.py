@@ -1,15 +1,17 @@
+# Funciones relacionadas con la generación y validación de tokens JWT
+
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-import jwt #Libreria usada para generar tokens
+import jwt
 from dotenv import load_dotenv
 
 load_dotenv()
 
 SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256") 
-EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES", "60")) #aqui se carga el token y como se asignara al usarse, igualmente se establece un tiempo para que expire
+ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
+EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES", "60"))
 
 
 if not SECRET_KEY:
@@ -18,6 +20,7 @@ if not SECRET_KEY:
     )
 
 
+# Genera un token JWT para un usuario autenticado
 def crear_token_acceso(
     id_usuario: int,
     correo: str,
@@ -25,7 +28,7 @@ def crear_token_acceso(
 ) -> str:
     fecha_actual = datetime.now(timezone.utc)
     fecha_expiracion = fecha_actual + timedelta(
-        minutes=EXPIRE_MINUTES #aqui se establece el tiempo en el que empezara a contar la validez del token
+        minutes=EXPIRE_MINUTES
     )
 
     payload = {
@@ -33,7 +36,7 @@ def crear_token_acceso(
         "correo": correo,
         "rol": rol,
         "iat": fecha_actual,
-        "exp": fecha_expiracion #los datos que almacenara el token
+        "exp": fecha_expiracion
     }
 
     return jwt.encode(
@@ -43,6 +46,7 @@ def crear_token_acceso(
     )
 
 
+#Valida un token JWT y devuelve su contenido
 def decodificar_token(token: str) -> dict[str, Any] | None:
     try:
         return jwt.decode(
@@ -55,4 +59,4 @@ def decodificar_token(token: str) -> dict[str, Any] | None:
         return None
 
     except jwt.InvalidTokenError:
-        return None #aqui se crea una funcion para comprobar el token cada que se requiera
+        return None

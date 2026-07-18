@@ -11,9 +11,12 @@ from src.schemas.visitante_schema import (
 )
 from src.services import visitante_service
 
+from src.dependencies.auth_dependencies import obtener_usuario_actual
+
 router = APIRouter(
     prefix="/visitantes",
-    tags=["Visitantes"]
+    tags=["Visitantes"],
+    dependencies=[Depends(obtener_usuario_actual)]
 )
 
 

@@ -11,9 +11,12 @@ from src.schemas.usuario_schema import (
 )
 from src.services import usuario_service
 
+from src.dependencies.auth_dependencies import obtener_usuario_actual
+
 router = APIRouter(
     prefix="/usuarios",
-    tags=["Usuarios"]
+    tags=["Usuarios"],
+    dependencies=[Depends(obtener_usuario_actual)]
 )
 
 

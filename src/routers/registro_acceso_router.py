@@ -11,9 +11,12 @@ from src.schemas.registro_acceso_schema import (
 )
 from src.services import registro_acceso_service
 
+from src.dependencies.auth_dependencies import obtener_usuario_actual
+
 router = APIRouter(
     prefix="/registros-accesos",
-    tags=["Registro de Accesos"]
+    tags=["Registro de Accesos"],
+    dependencies=[Depends(obtener_usuario_actual)]
 )
 
 
