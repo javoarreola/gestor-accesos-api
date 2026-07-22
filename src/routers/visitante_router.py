@@ -10,25 +10,37 @@ from src.schemas.visitante_schema import (
     VisitanteResponse
 )
 from src.services import visitante_service
+from src.dependencies.role_dependencies import permitir_roles
+from src.models.usuario import Usuario
+from src.utils.roles import (
+    PERSONAL_OPERATIVO,
+    SOLO_ADMIN
+)
 
-from src.dependencies.auth_dependencies import obtener_usuario_actual
 
 router = APIRouter(
     prefix="/visitantes",
     tags=["Visitantes"],
-    dependencies=[Depends(obtener_usuario_actual)]
 )
 
 
 @router.get("/", response_model=List[VisitanteResponse])
-def obtener_visitantes(db: Session = Depends(get_db)):
+def obtener_visitantes(
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(PERSONAL_OPERATIVO)
+    )
+):
     return visitante_service.obtener_visitantes(db)
 
 
 @router.get("/{id_visitante}", response_model=VisitanteResponse)
 def obtener_visitante(
     id_visitante: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(PERSONAL_OPERATIVO)
+    )
 ):
     visitante = visitante_service.obtener_visitante_por_id(
         db,
@@ -47,7 +59,10 @@ def obtener_visitante(
 @router.post("/", response_model=VisitanteResponse)
 def crear_visitante(
     visitante: VisitanteCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(PERSONAL_OPERATIVO)
+    )
 ):
     return visitante_service.crear_visitante(
         db,
@@ -59,7 +74,10 @@ def crear_visitante(
 def actualizar_visitante(
     id_visitante: int,
     visitante: VisitanteUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(PERSONAL_OPERATIVO)
+    )
 ):
     visitante_actualizado = visitante_service.actualizar_visitante(
         db,
@@ -79,7 +97,10 @@ def actualizar_visitante(
 @router.delete("/{id_visitante}")
 def eliminar_visitante(
     id_visitante: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+     usuario_actual: Usuario = Depends(
+        permitir_roles(SOLO_ADMIN)
+    )
 ):
     visitante_eliminado = visitante_service.eliminar_visitante(
         db,

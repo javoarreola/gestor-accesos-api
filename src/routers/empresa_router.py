@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from src.config.database import get_db
-from src.dependencies.auth_dependencies import obtener_usuario_actual
 from src.schemas.empresa_schema import (
     EmpresaCreate, 
     EmpresaUpdate, 
@@ -12,13 +11,17 @@ from src.schemas.empresa_schema import (
 )
 from src.services import empresa_service
 
-
+from src.dependencies.role_dependencies import permitir_roles
+from src.models.usuario import Usuario
+from src.utils.roles import (
+    PERSONAL_OPERATIVO,
+    SOLO_ADMIN
+)
 
 
 router = APIRouter(
     prefix="/empresas",
     tags=["Empresas"],
-    dependencies=[Depends(obtener_usuario_actual)]
 )
 
 
@@ -28,6 +31,9 @@ router = APIRouter(
 )
 def obtener_empresas(
     db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(PERSONAL_OPERATIVO)
+    )
 ):
     return empresa_service.obtener_empresas(db)
 
@@ -38,7 +44,10 @@ def obtener_empresas(
 )
 def obtener_empresa(
     id_empresa: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(PERSONAL_OPERATIVO)
+    )
 ):
 
     empresa = empresa_service.obtener_empresa_por_id(
@@ -61,7 +70,10 @@ def obtener_empresa(
 )
 def crear_empresa(
     empresa: EmpresaCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(SOLO_ADMIN)
+    )
 ):
     return empresa_service.crear_empresa( #se llaman las funciones para crear una empresa
         db,
@@ -76,7 +88,10 @@ def crear_empresa(
 def actualizar_empresa(
     id_empresa: int,
     empresa: EmpresaUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(SOLO_ADMIN)
+    )
 ):
 
     empresa_actualizada = (
@@ -99,7 +114,11 @@ def actualizar_empresa(
 @router.delete("/{id_empresa}")
 def eliminar_empresa(
     id_empresa: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(SOLO_ADMIN)
+    )
+
 ):
 
     empresa_eliminada = (

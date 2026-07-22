@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
 
+from datetime import datetime
+
 from src.models.usuario import Usuario
 from src.schemas.usuario_schema import (
     UsuarioCreate,
@@ -25,6 +27,8 @@ def create(db: Session, usuario: UsuarioCreate):
         correo=usuario.correo,
         rol=usuario.rol,
         password_hash=usuario.password_hash,
+        activo=True,
+        fecha_creacion=datetime.now()
     )
 
     db.add(nuevo_usuario)

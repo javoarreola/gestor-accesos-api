@@ -10,19 +10,26 @@ from src.schemas.registro_acceso_schema import (
     RegistroAccesoResponse
 )
 from src.services import registro_acceso_service
-
-from src.dependencies.auth_dependencies import obtener_usuario_actual
+from src.dependencies.role_dependencies import permitir_roles
+from src.models.usuario import Usuario
+from src.utils.roles import (
+    PERSONAL_OPERATIVO,
+    ADMIN_GUARDIA,
+    SOLO_ADMIN
+)
 
 router = APIRouter(
     prefix="/registros-accesos",
     tags=["Registro de Accesos"],
-    dependencies=[Depends(obtener_usuario_actual)]
 )
 
 
 @router.get("/", response_model=List[RegistroAccesoResponse])
 def obtener_registros(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(PERSONAL_OPERATIVO)
+    )
 ):
     return registro_acceso_service.obtener_registros(db)
 
@@ -30,7 +37,10 @@ def obtener_registros(
 @router.get("/{id_registro}", response_model=RegistroAccesoResponse)
 def obtener_registro(
     id_registro: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(PERSONAL_OPERATIVO)
+    )
 ):
     registro = registro_acceso_service.obtener_registro_por_id(
         db,
@@ -49,7 +59,10 @@ def obtener_registro(
 @router.post("/", response_model=RegistroAccesoResponse)
 def crear_registro(
     registro: RegistroAccesoCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(PERSONAL_OPERATIVO)
+    )
 ):
     return registro_acceso_service.crear_registro(
         db,
@@ -61,7 +74,10 @@ def crear_registro(
 def actualizar_registro(
     id_registro: int,
     registro: RegistroAccesoUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(PERSONAL_OPERATIVO)
+    )
 ):
     registro_actualizado = (
         registro_acceso_service.actualizar_registro(
@@ -83,7 +99,10 @@ def actualizar_registro(
 @router.delete("/{id_registro}")
 def eliminar_registro(
     id_registro: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(PERSONAL_OPERATIVO)
+    )
 ):
     registro_eliminado = (
         registro_acceso_service.eliminar_registro(

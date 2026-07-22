@@ -10,25 +10,33 @@ from src.schemas.usuario_schema import (
     UsuarioResponse
 )
 from src.services import usuario_service
-
-from src.dependencies.auth_dependencies import obtener_usuario_actual
+from src.dependencies.role_dependencies import permitir_roles
+from src.models.usuario import Usuario
+from src.utils.roles import SOLO_ADMIN
 
 router = APIRouter(
     prefix="/usuarios",
     tags=["Usuarios"],
-    dependencies=[Depends(obtener_usuario_actual)]
 )
 
 
 @router.get("/", response_model=List[UsuarioResponse])
-def obtener_usuarios(db: Session = Depends(get_db)):
+def obtener_usuarios(
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(SOLO_ADMIN)
+    )
+):
     return usuario_service.obtener_usuarios(db)
 
 
 @router.get("/{id_usuario}", response_model=UsuarioResponse)
 def obtener_usuario(
     id_usuario: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(SOLO_ADMIN)
+    )
 ):
     usuario = usuario_service.obtener_usuario_por_id(
         db,
@@ -47,7 +55,10 @@ def obtener_usuario(
 @router.post("/", response_model=UsuarioResponse)
 def crear_usuario(
     usuario: UsuarioCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(SOLO_ADMIN)
+    )
 ):
     return usuario_service.crear_usuario(
         db,
@@ -59,7 +70,10 @@ def crear_usuario(
 def actualizar_usuario(
     id_usuario: int,
     usuario: UsuarioUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+     usuario_actual: Usuario = Depends(
+        permitir_roles(SOLO_ADMIN)
+    )
 ):
     usuario_actualizado = usuario_service.actualizar_usuario(
         db,
@@ -79,7 +93,10 @@ def actualizar_usuario(
 @router.delete("/{id_usuario}")
 def eliminar_usuario(
     id_usuario: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(SOLO_ADMIN)
+    )
 ):
     usuario_eliminado = usuario_service.eliminar_usuario(
         db,

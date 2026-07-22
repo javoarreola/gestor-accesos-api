@@ -12,40 +12,67 @@ from src.schemas.area_schema import (
 )
 from src.services import area_service
 
-from src.dependencies.auth_dependencies import obtener_usuario_actual
+from src.dependencies.role_dependencies import permitir_roles
+from src.models.usuario import Usuario
+from src.utils.roles import (
+    PERSONAL_OPERATIVO,
+    SOLO_ADMIN
+)
 
 router = APIRouter(
     prefix="/areas",
     tags=["Áreas"],
-    dependencies=[Depends(obtener_usuario_actual)]
 )
 
 
 @router.get("/", response_model=List[AreaResponse])
-def obtener_areas(db: Session = Depends(get_db)):
+def obtener_areas(
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(PERSONAL_OPERATIVO)
+    )
+):
     return area_service.obtener_areas(db)
 
 
 @router.get("/{id_area}", response_model=AreaResponse)
-def obtener_area(id_area: int, db: Session = Depends(get_db)):
+def obtener_area(
+    id_area: int, db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(PERSONAL_OPERATIVO)
+    )
+):
     area = area_service.obtener_area_por_id(db, id_area)
 
     if area is None:
-        raise HTTPException(status_code=404, detail="Área no encontrada")
+        raise HTTPException(
+            status_code=404, 
+            detail="Área no encontrada"
+        )
 
     return area
 
 
 @router.post("/", response_model=AreaResponse)
-def crear_area(area: AreaCreate, db: Session = Depends(get_db)):
-    return area_service.crear_area(db, area)
+def crear_area(
+    area: AreaCreate, 
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(SOLO_ADMIN)
+    )
+):
+    return area_service.crear_area(db, area),
+    
 
 
 @router.put("/{id_area}", response_model=AreaResponse)
 def actualizar_area(
     id_area: int,
     area: AreaUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(SOLO_ADMIN)
+    )
 ):
     area_actualizada = area_service.actualizar_area(db, id_area, area)
 
@@ -56,7 +83,13 @@ def actualizar_area(
 
 
 @router.delete("/{id_area}")
-def eliminar_area(id_area: int, db: Session = Depends(get_db)):
+def eliminar_area(
+    id_area: int, 
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(SOLO_ADMIN)
+    )
+):
     area_eliminada = area_service.eliminar_area(db, id_area)
 
     if area_eliminada is None:
