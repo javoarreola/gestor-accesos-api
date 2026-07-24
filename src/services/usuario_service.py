@@ -29,7 +29,3 @@ def actualizar_usuario(
         id_usuario,
         usuario
     )
-
-
-def eliminar_usuario(db: Session, id_usuario: int):
-    return usuario_repository.delete(db, id_usuario)

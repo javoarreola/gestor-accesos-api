@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
 
+from datetime import datetime
+
 from src.models.registro_acceso import RegistroAcceso
 from src.schemas.registro_acceso_schema import (
     RegistroAccesoCreate,
@@ -34,7 +36,10 @@ def create(
         id_area=registro.id_area,
         id_usuario=registro.id_usuario,
         anfitrion=registro.anfitrion,
-        motivo_visita=registro.motivo_visita
+        motivo_visita=registro.motivo_visita,
+        fecha_hora_entrada=datetime.now(),
+        fecha_hora_salida=None,
+        estatus="Dentro"
     )
 
     db.add(nuevo_registro)

@@ -5,6 +5,11 @@ from src.schemas.registro_acceso_schema import (
     RegistroAccesoCreate,
     RegistroAccesoUpdate
 )
+from src.services import (
+    usuario_service,
+    visitante_service,
+    email_service
+)
 
 
 def obtener_registros(db: Session):
@@ -25,10 +30,35 @@ def crear_registro(
     db: Session,
     registro: RegistroAccesoCreate
 ):
-    return registro_acceso_repository.create(
+
+    nuevo_registro = registro_acceso_repository.create(
         db,
         registro
     )
+
+    usuario = usuario_service.obtener_usuario_por_id(
+        db,
+        registro.id_usuario
+    )
+
+    visitante = visitante_service.obtener_visitante_por_id(
+        db,
+        registro.id_visitante
+    )
+
+    if usuario and visitante:
+
+        email_service.notificar_llegada_visitante(
+            destinatario=usuario.correo,
+            nombre_anfitrion=usuario.nombre,
+            nombre_visitante=f"{visitante.nombre} {visitante.apellido}",
+            motivo_visita=registro.motivo_visita,
+            fecha_hora_entrada=str(
+                nuevo_registro.fecha_hora_entrada
+            )
+        )
+
+    return nuevo_registro
 
 
 def actualizar_registro(
