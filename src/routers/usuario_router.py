@@ -7,12 +7,16 @@ from src.config.database import get_db
 from src.schemas.usuario_schema import (
     UsuarioCreate,
     UsuarioUpdate,
-    UsuarioResponse
+    UsuarioResponse,
+    UsuarioAnfitrionResponse
 )
 from src.services import usuario_service
 from src.dependencies.role_dependencies import permitir_roles
 from src.models.usuario import Usuario
-from src.utils.roles import SOLO_ADMIN
+from src.utils.roles import (
+    SOLO_ADMIN,
+    PERSONAL_OPERATIVO
+)
 
 router = APIRouter(
     prefix="/usuarios",
@@ -29,6 +33,24 @@ def obtener_usuarios(
 ):
     return usuario_service.obtener_usuarios(db)
 
+@router.get(
+    "/anfitriones/",
+    response_model=List[UsuarioAnfitrionResponse]
+)
+def obtener_anfitriones(
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(PERSONAL_OPERATIVO)
+    )
+):
+    usuarios = usuario_service.obtener_usuarios(db)
+
+    return [
+        usuario
+        for usuario in usuarios
+        if usuario.activo
+        and usuario.es_anfitrion
+    ]
 
 @router.get("/{id_usuario}", response_model=UsuarioResponse)
 def obtener_usuario(

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -26,12 +26,16 @@ router = APIRouter(
 
 @router.get("/", response_model=List[VisitanteResponse])
 def obtener_visitantes(
+    nombre: Optional[str] = None,
     db: Session = Depends(get_db),
     usuario_actual: Usuario = Depends(
         permitir_roles(PERSONAL_OPERATIVO)
     )
 ):
-    return visitante_service.obtener_visitantes(db)
+    return visitante_service.obtener_visitantes(
+        db,
+        nombre
+    )
 
 
 @router.get("/{id_visitante}", response_model=VisitanteResponse)

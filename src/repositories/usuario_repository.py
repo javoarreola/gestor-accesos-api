@@ -28,6 +28,7 @@ def create(db: Session, usuario: UsuarioCreate):
         rol=usuario.rol,
         password_hash=usuario.password_hash,
         activo=True,
+        es_anfitrion=usuario.es_anfitrion,
         fecha_creacion=datetime.now()
     )
 
@@ -52,6 +53,7 @@ def update(
     usuario_db.correo = usuario.correo
     usuario_db.rol = usuario.rol
     usuario_db.password_hash = usuario.password_hash
+    usuario_db.es_anfitrion = usuario.es_anfitrion
     usuario_db.activo = usuario.activo
 
     db.commit()

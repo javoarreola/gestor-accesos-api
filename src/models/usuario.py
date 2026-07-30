@@ -39,6 +39,11 @@ class Usuario(Base):
         Boolean, 
         nullable=False
         )
+    es_anfitrion = Column(
+        "Es_Anfitrion",
+        Boolean,
+        nullable=False
+        )
     fecha_creacion = Column(
         "Fecha_Creacion", 
         DateTime, 

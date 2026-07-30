@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy.orm import Session
 
 from src.models.visitante import Visitante
@@ -7,8 +9,26 @@ from src.schemas.visitante_schema import (
 )
 
 
-def get_all(db: Session):
-    return db.query(Visitante).all()
+def get_all(
+    db: Session,
+    nombre: Optional[str] = None
+):
+    consulta = db.query(Visitante)
+
+    if nombre:
+        termino = f"%{nombre.strip()}%"
+
+        consulta = consulta.filter(
+            (
+                Visitante.nombre.ilike(termino)
+            )
+            |
+            (
+                Visitante.apellido.ilike(termino)
+            )
+        )
+
+    return consulta.all()
 
 
 def get_by_id(db: Session, id_visitante: int):

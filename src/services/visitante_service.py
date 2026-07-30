@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy.orm import Session
 
 from src.repositories import visitante_repository
@@ -7,8 +9,14 @@ from src.schemas.visitante_schema import (
 )
 
 
-def obtener_visitantes(db: Session):
-    return visitante_repository.get_all(db)
+def obtener_visitantes(
+    db: Session,
+    nombre: Optional[str] = None
+):
+    return visitante_repository.get_all(
+        db,
+        nombre
+    )
 
 
 def obtener_visitante_por_id(
