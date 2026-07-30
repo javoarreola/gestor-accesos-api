@@ -7,7 +7,8 @@ from src.config.database import get_db
 from src.schemas.registro_acceso_schema import (
     RegistroAccesoCreate,
     RegistroAccesoUpdate,
-    RegistroAccesoResponse
+    RegistroAccesoResponse,
+    RegistroAccesoHistorialResponse
 )
 from src.services import registro_acceso_service
 from src.dependencies.role_dependencies import permitir_roles
@@ -24,7 +25,7 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=List[RegistroAccesoResponse])
+@router.get("/", response_model=List[RegistroAccesoHistorialResponse])
 def obtener_registros(
     db: Session = Depends(get_db),
     usuario_actual: Usuario = Depends(

@@ -34,3 +34,11 @@ class RegistroAccesoResponse(RegistroAccesoBase):
 
     class Config:
         from_attributes = True
+
+class RegistroAccesoHistorialResponse(BaseModel):
+    visitante: str
+    area: str
+    anfitrion: str
+    motivo_visita: str
+    fecha_hora_entrada: datetime
+    fecha_hora_salida: Optional[datetime] = None

@@ -10,12 +10,25 @@ from src.routers.registro_acceso_router import (
     router as registro_acceso_router
 )
 from src.routers.login_router import router as login_router
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # Inicialización de la aplicación FastAPI.
 app = FastAPI(
     title="Gestor de Accesos API",
     version="1.0.0"
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost",
+        "http://127.0.0.1",
+        "http://localhost:80",
+        "http://127.0.0.1:80"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Registro de los módulos principales de la API.

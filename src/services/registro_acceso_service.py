@@ -13,7 +13,28 @@ from src.services import (
 
 
 def obtener_registros(db: Session):
-    return registro_acceso_repository.get_all(db)
+    registros = registro_acceso_repository.get_all(db)
+
+    historial = []
+
+    for registro in registros:
+        nombre_visitante = (
+            f"{registro.visitante.nombre} "
+            f"{registro.visitante.apellido}"
+        )
+
+        historial.append(
+            {
+                "visitante": nombre_visitante,
+                "area": registro.area.nombre_area,
+                "anfitrion": registro.anfitrion,
+                "motivo_visita": registro.motivo_visita,
+                "fecha_hora_entrada": registro.fecha_hora_entrada,
+                "fecha_hora_salida": registro.fecha_hora_salida
+            }
+        )
+
+    return historial
 
 
 def obtener_registro_por_id(
