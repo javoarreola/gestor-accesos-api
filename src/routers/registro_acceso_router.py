@@ -34,6 +34,29 @@ def obtener_registros(
 ):
     return registro_acceso_service.obtener_registros(db)
 
+@router.patch(
+    "/{id_registro}/salida",
+    response_model=RegistroAccesoResponse
+)
+def registrar_salida(
+    id_registro: int,
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(
+        permitir_roles(PERSONAL_OPERATIVO)
+    )
+):
+    registro = registro_acceso_service.registrar_salida(
+        db,
+        id_registro
+    )
+
+    if registro is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Registro de acceso no encontrado"
+        )
+
+    return registro
 
 @router.get("/{id_registro}", response_model=RegistroAccesoResponse)
 def obtener_registro(

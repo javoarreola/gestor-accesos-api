@@ -1,5 +1,7 @@
 from typing import Optional
 
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 
 from src.models.visitante import Visitante
@@ -8,6 +10,11 @@ from src.schemas.visitante_schema import (
     VisitanteUpdate
 )
 
+def normalizar_texto(valor: str) -> str:
+    return " ".join(
+        palabra.capitalize()
+        for palabra in valor.strip().split()
+    )
 
 def get_all(
     db: Session,
@@ -44,14 +51,15 @@ def get_by_id(db: Session, id_visitante: int):
 def create(
     db: Session,
     visitante: VisitanteCreate
-):
+    ):
 
     nuevo_visitante = Visitante(
         id_empresa=visitante.id_empresa,
-        nombre=visitante.nombre,
-        apellido=visitante.apellido,
-        identificacion=visitante.identificacion,
-        telefono=visitante.telefono
+        nombre=normalizar_texto(visitante.nombre),
+        apellido=normalizar_texto(visitante.apellido),
+        identificacion=visitante.identificacion.strip().upper(),
+        telefono=visitante.telefono.strip(),
+        fecha_registro=datetime.now()
     )
 
     db.add(nuevo_visitante)
@@ -75,11 +83,19 @@ def update(
     if visitante_db is None:
         return None
 
-    visitante_db.id_empresa = visitante.id_empresa
-    visitante_db.nombre = visitante.nombre
-    visitante_db.apellido = visitante.apellido
-    visitante_db.identificacion = visitante.identificacion
-    visitante_db.telefono = visitante.telefono
+    visitante_db.nombre = normalizar_texto(
+    visitante.nombre
+    )
+
+    visitante_db.apellido = normalizar_texto(
+        visitante.apellido
+    )
+
+    visitante_db.identificacion = (
+        visitante.identificacion.strip().upper()
+    )
+
+    visitante_db.telefono = visitante.telefono.strip()
 
     db.commit()
     db.refresh(visitante_db)

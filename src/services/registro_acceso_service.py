@@ -24,15 +24,17 @@ def obtener_registros(db: Session):
         )
 
         historial.append(
-            {
-                "visitante": nombre_visitante,
-                "area": registro.area.nombre_area,
-                "anfitrion": registro.anfitrion,
-                "motivo_visita": registro.motivo_visita,
-                "fecha_hora_entrada": registro.fecha_hora_entrada,
-                "fecha_hora_salida": registro.fecha_hora_salida
-            }
-        )
+    {
+        "id_registro": registro.id_registro,
+        "visitante": nombre_visitante,
+        "area": registro.area.nombre_area,
+        "anfitrion": registro.anfitrion,
+        "motivo_visita": registro.motivo_visita,
+        "fecha_hora_entrada": registro.fecha_hora_entrada,
+        "fecha_hora_salida": registro.fecha_hora_salida,
+        "estatus": registro.estatus
+    }
+)
 
     return historial
 
@@ -51,33 +53,42 @@ def crear_registro(
     db: Session,
     registro: RegistroAccesoCreate
 ):
-
-    nuevo_registro = registro_acceso_repository.create(
-        db,
-        registro
-    )
-
     usuario = usuario_service.obtener_usuario_por_id(
         db,
         registro.id_usuario
     )
+
+    if usuario is None:
+        return None
 
     visitante = visitante_service.obtener_visitante_por_id(
         db,
         registro.id_visitante
     )
 
-    if usuario and visitante:
+    if visitante is None:
+        return None
 
-        email_service.notificar_llegada_visitante(
-            destinatario=usuario.correo,
-            nombre_anfitrion=usuario.nombre,
-            nombre_visitante=f"{visitante.nombre} {visitante.apellido}",
-            motivo_visita=registro.motivo_visita,
-            fecha_hora_entrada=str(
-                nuevo_registro.fecha_hora_entrada
-            )
+    nuevo_registro = registro_acceso_repository.create(
+        db,
+        registro
+    )
+
+    if nuevo_registro is None:
+        return None
+
+    email_service.notificar_llegada_visitante(
+        destinatario=usuario.correo,
+        nombre_anfitrion=usuario.nombre,
+        nombre_visitante=(
+            f"{visitante.nombre} "
+            f"{visitante.apellido}"
+        ),
+        motivo_visita=registro.motivo_visita,
+        fecha_hora_entrada=str(
+            nuevo_registro.fecha_hora_entrada
         )
+    )
 
     return nuevo_registro
 
@@ -99,6 +110,15 @@ def eliminar_registro(
     id_registro: int
 ):
     return registro_acceso_repository.delete(
+        db,
+        id_registro
+    )
+
+def registrar_salida(
+    db: Session,
+    id_registro: int
+):
+    return registro_acceso_repository.registrar_salida(
         db,
         id_registro
     )

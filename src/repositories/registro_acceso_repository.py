@@ -1,6 +1,9 @@
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 
-from datetime import datetime
+from src.models.usuario import Usuario
+
 
 from src.models.registro_acceso import RegistroAcceso
 from src.schemas.registro_acceso_schema import (
@@ -30,12 +33,22 @@ def create(
     db: Session,
     registro: RegistroAccesoCreate
 ):
+    usuario = (
+        db.query(Usuario)
+        .filter(
+            Usuario.id_usuario == registro.id_usuario
+        )
+        .first()
+    )
+
+    if usuario is None:
+        return None
 
     nuevo_registro = RegistroAcceso(
         id_visitante=registro.id_visitante,
         id_area=registro.id_area,
         id_usuario=registro.id_usuario,
-        anfitrion=registro.anfitrion,
+        anfitrion=usuario.nombre,
         motivo_visita=registro.motivo_visita,
         fecha_hora_entrada=datetime.now(),
         fecha_hora_salida=None,
@@ -46,7 +59,7 @@ def create(
     db.commit()
     db.refresh(nuevo_registro)
 
-    return nuevo_registro #crea un nuevo registro en la base de datos
+    return nuevo_registro
 
 
 def update(
@@ -95,3 +108,26 @@ def delete(
     db.commit()
 
     return registro_db #elimina un registro existente
+
+def registrar_salida(
+    db: Session,
+    id_registro: int
+):
+    registro_db = get_by_id(
+        db,
+        id_registro
+    )
+
+    if registro_db is None:
+        return None
+
+    if registro_db.fecha_hora_salida is not None:
+        return registro_db
+
+    registro_db.fecha_hora_salida = datetime.now()
+    registro_db.estatus = "Salida registrada"
+
+    db.commit()
+    db.refresh(registro_db)
+
+    return registro_db
