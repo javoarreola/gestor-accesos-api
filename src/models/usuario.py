@@ -1,4 +1,13 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Boolean,
+    DateTime,
+    ForeignKey
+)
+
+from sqlalchemy.orm import relationship
 
 from src.config.database import Base
 
@@ -44,8 +53,18 @@ class Usuario(Base):
         Boolean,
         nullable=False
         )
+    id_area = Column(
+        "ID_Area",
+        Integer,
+        ForeignKey("Areas.ID_Area"),
+        nullable=False
+    )
     fecha_creacion = Column(
         "Fecha_Creacion", 
         DateTime, 
         nullable=False
         )
+    area = relationship(
+        "Area",
+        back_populates="usuarios"
+    )

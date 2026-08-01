@@ -61,7 +61,7 @@ def crear_area(
         permitir_roles(SOLO_ADMIN)
     )
 ):
-    return area_service.crear_area(db, area),
+    return area_service.crear_area(db, area)
     
 
 

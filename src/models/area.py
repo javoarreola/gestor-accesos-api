@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 
 from src.config.database import Base
 
@@ -19,4 +20,8 @@ class Area(Base):
         String(100),
         nullable=False,
         unique=True
+    )
+    usuarios = relationship(
+        "Usuario",
+        back_populates="area"
     )

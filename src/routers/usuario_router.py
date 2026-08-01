@@ -33,6 +33,7 @@ def obtener_usuarios(
 ):
     return usuario_service.obtener_usuarios(db)
 
+
 @router.get(
     "/anfitriones/",
     response_model=List[UsuarioAnfitrionResponse]
@@ -43,7 +44,7 @@ def obtener_anfitriones(
         permitir_roles(PERSONAL_OPERATIVO)
     )
 ):
-    usuarios = usuario_service.obtener_usuarios(db)
+    return usuario_service.obtener_anfitriones(db)
 
     return [
         usuario

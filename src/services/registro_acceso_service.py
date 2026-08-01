@@ -78,8 +78,8 @@ def crear_registro(
         return None
 
     email_service.notificar_llegada_visitante(
-        destinatario=usuario.correo,
-        nombre_anfitrion=usuario.nombre,
+        destinatario=usuario["correo"],
+        nombre_anfitrion=usuario["nombre"],
         nombre_visitante=(
             f"{visitante.nombre} "
             f"{visitante.apellido}"
